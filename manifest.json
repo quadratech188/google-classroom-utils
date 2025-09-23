@@ -1,0 +1,21 @@
+{
+	"manifest_version": 2,
+	"name": "Google Classroom Utils",
+	"version": "0.0",
+
+	"description": "Utilities for Google Classroom",
+
+	"content_scripts": [
+		{
+			"matches": ["*://classroom.google.com/*"],
+			"css": ["style.css"],
+			"js": ["inject-links.js"]
+		}
+	],
+
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "google-classroom-utils@quadratech188"
+		}
+	}
+}
