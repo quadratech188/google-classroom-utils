@@ -8,22 +8,30 @@ function get_classroom_name() {
 	return match[1];
 }
 
+async function get_download_path() {
+	// TODO: Create UI
+	
+	const storage_data = await browser.storage.sync.get('classroom_map');
+	const classroom_map = storage_data['classroom_map'] || {};
+
+	const classroom_name = get_classroom_name();
+	if (classroom_name in classroom_map) {
+		return classroom_map[classroom_name];
+	}
+	return '';
+}
+
 function direct_download(file_url) {
 	browser.runtime.sendMessage({
 		type: 'direct_download',
 		url: file_url
-	})
+	});
 }
 
-function folder_download(file_url) {
-	let classroom_name = get_classroom_name();
-
-	let classroom_map = browser.storage.sync.get('classroom_map');
-
-	if (classroom_name in classroom_map) {
-		console.log(`Downloading to ${classroom_map[classroom_name]}`);
-	}
-	else {
-		console.log("Unimplemented");
-	}
+async function folder_download(file_url) {
+	browser.runtime.sendMessage({
+		type: 'folder_download',
+		url: file_url,
+		dest: await get_download_path()
+	});
 }

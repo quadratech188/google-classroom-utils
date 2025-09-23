@@ -29,7 +29,7 @@ function add_button_div(div) {
 	let folder_download_btn = document.createElement('button');
 	folder_download_btn.textContent = "Download to Folder"
 	folder_download_btn.addEventListener('click', () => {
-		console.log(`Folder download ${download_url}`);
+		folder_download(download_url);
 	})
 	extension_div.appendChild(folder_download_btn);
 
