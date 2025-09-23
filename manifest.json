@@ -2,16 +2,26 @@
 	"manifest_version": 2,
 	"name": "Google Classroom Utils",
 	"version": "0.0",
-
 	"description": "Utilities for Google Classroom",
+
+	"permissions": [
+		"downloads",
+		"storage",
+		"tabHide",
+		"tabs"
+	],
 
 	"content_scripts": [
 		{
 			"matches": ["*://classroom.google.com/*"],
 			"css": ["style.css"],
-			"js": ["inject-links.js"]
+			"js": ["content-actions.js", "inject-links.js"]
 		}
 	],
+
+	"background": {
+		"scripts": ["background-actions.js"]
+	},
 
 	"browser_specific_settings": {
 		"gecko": {

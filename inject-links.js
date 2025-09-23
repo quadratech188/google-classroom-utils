@@ -1,13 +1,12 @@
 const FILE_DIV_SELECTOR = 'div.luto0c';
 const DOWNLOAD_EXTENSION_DIV_CLASS = 'download-extension';
-
 function add_button_div(div) {
 	const url = div.querySelector('a').href;
 
 	const re = /https:\/\/drive\.google\.com\/file\/d\/([^\/]+)\/view\?usp=classroom_web&authuser=(\d+)/;
 	const match = url.match(re);
 	if (match === null) {
-		// Probably just not a google drivel link, but I don't really care
+		// Probably just not a google drive link, but I don't really care
 		console.warn(`Failed to parse link: ${url}`);
 		return;
 	}
@@ -15,19 +14,19 @@ function add_button_div(div) {
 	const authuser = match[2];
 
 	// https://sites.google.com/site/gdocs2direct/
-	const download_url = `https://drive.google.com/uc?export=download&id=${file_id}&authuser=${authuser}`
+	const download_url = `https://drive.usercontent.google.com/download?id=${file_id}&export=download&authuser=${authuser}`
 
-	var extension_div = document.createElement('div');
+	let extension_div = document.createElement('div');
 	extension_div.classList.add(DOWNLOAD_EXTENSION_DIV_CLASS);
 
-	var direct_download_btn = document.createElement('button');
+	let direct_download_btn = document.createElement('button');
 	direct_download_btn.textContent = "Direct Download"
 	direct_download_btn.addEventListener('click', () => {
-		console.log(`Direct download ${download_url}`);
+		direct_download(download_url);
 	})
 	extension_div.appendChild(direct_download_btn);
 
-	var folder_download_btn = document.createElement('button');
+	let folder_download_btn = document.createElement('button');
 	folder_download_btn.textContent = "Download to Folder"
 	folder_download_btn.addEventListener('click', () => {
 		console.log(`Folder download ${download_url}`);
