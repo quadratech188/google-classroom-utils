@@ -1,5 +1,6 @@
 const FILE_DIV_SELECTOR = 'div.luto0c';
-const DOWNLOAD_EXTENSION_DIV_CLASS = 'download-extension';
+const DOWNLOAD_EXTENSION_DIV_CLASS = 'gcu-download-extension';
+
 function add_button_div(div) {
 	const url = div.querySelector('a').href;
 

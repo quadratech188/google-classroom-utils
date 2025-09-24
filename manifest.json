@@ -23,6 +23,10 @@
 		"scripts": ["background-actions.js"]
 	},
 
+	"web_accessible_resources": [
+		"path-chooser.html"
+	],
+
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "google-classroom-utils@quadratech188"
