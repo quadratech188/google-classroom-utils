@@ -6,6 +6,7 @@
 
 	"permissions": [
 		"downloads",
+		"nativeMessaging",
 		"storage",
 		"tabHide",
 		"tabs"
