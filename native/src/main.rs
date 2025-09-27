@@ -20,7 +20,6 @@ struct RequestOptions {
 struct Request {
     file: path::PathBuf,
     dest: path::PathBuf,
-    #[serde(flatten)]
     options: RequestOptions
 }
 
