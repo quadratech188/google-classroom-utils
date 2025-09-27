@@ -64,22 +64,39 @@ async function get_dest_folder() {
 }
 
 function direct_download(file_url) {
-	browser.runtime.sendMessage({
-		type: 'direct_download',
-		url: file_url
-	});
+	browser.runtime.sendMessage(file_url);
+}
+
+function handle_message(message) {
+	switch(message.type) {
+		case 'success':
+			console.log('success');
+			console.log(message.message);
+			break;
+		case 'error':
+			console.log('error');
+			console.log(message.message);
+			break;
+
+	}
 }
 
 async function folder_download(file_url) {
+	let folder;
 	try {
-		const folder = await get_dest_folder();
-		browser.runtime.sendMessage({
-			type: 'folder_download',
-			url: file_url,
-			dest_folder: folder
-		});
+		folder = await get_dest_folder();
 	}
 	catch (e) {
 		console.log(`Not saving because of: ${e}`)
+		return;
 	}
+
+	let port = browser.runtime.connect({
+		name: 'folder_download'
+	});
+	port.onMessage.addListener(handle_message);
+	port.postMessage({
+		url: file_url,
+		dest_folder: folder
+	})
 }

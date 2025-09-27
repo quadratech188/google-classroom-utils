@@ -44,4 +44,3 @@ async function move_download(download_id, dest, dest_options) {
 		browser.downloads.onChanged.addListener(listen);
 	})
 }
-

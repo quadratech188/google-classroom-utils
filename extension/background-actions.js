@@ -1,73 +1,69 @@
 browser.runtime.onMessage.addListener((message) => {
-	switch(message.type) {
-		case 'direct_download':
-			direct_download(message.url);
-			break;
-		case 'folder_download':
-			folder_download(message.url, message.dest_folder);
-			break;
-	}
+	direct_download(message.url);
 })
 
-async function direct_download(file_url) {
-	console.log(`Creating tab for ${file_url}`)
+browser.runtime.onConnect.addListener((port) => {
+	port.onMessage.addListener((message) => {
+		move = folder_download(message.url, message.dest_folder);
+		move.then((s) => {
+			port.postMessage({
+				type: 'success',
+				message: s
+			});
+		}, (e) => {
+			port.postMessage({
+				type: 'error',
+				message: e
+			});
+		});
+	})
+})
 
-	const download_tab = await browser.tabs.create({
-		active: false,
-		url: file_url
-	});
+function direct_download(file_url) {
+	return new Promise(async (resolve, reject) => {
+		console.log(`Creating tab for ${file_url}`)
+		const download_tab = await browser.tabs.create({
+			active: false,
+			url: file_url
+		});
 
-	// TODO: Make this optional
-	// browser.tabs.hide(download_tab.id);
-
-	await browser.storage.local.set({
-		[file_url]: {
-			type: 'direct_download',
-			tab_id: download_tab.id
+		async function listen(download) {
+			if (download.url != file_url) {
+				return;
+			}
+			browser.downloads.onCreated.removeListener(listen);
+			browser.tabs.remove(download_tab.id);
+			resolve();
 		}
+		browser.downloads.onCreated.addListener(listen);
 	});
 }
 
-async function folder_download(file_url, dest_folder) {
-	console.log(`Creating tab for ${file_url}`)
+function folder_download(file_url, dest_folder) {
+	return new Promise(async (resolve, reject) => {
+		console.log(`Creating tab for ${file_url}`)
+		const download_tab = await browser.tabs.create({
+			active: false,
+			url: file_url
+		});
 
-	const download_tab = await browser.tabs.create({
-		active: false,
-		url: file_url
-	});
+		async function listen(download) {
+			if (download.url != file_url) {
+				return;
+			}
 
-	// TODO: Make this optional
-	// browser.tabs.hide(download_tab.id);
+			browser.downloads.onCreated.removeListener(listen);
+			browser.tabs.remove(download_tab.id);
 
-	await browser.storage.local.set({
-		[file_url]: {
-			type: 'folder_download',
-			tab_id: download_tab.id,
-			dest_folder: dest_folder
+			const path = download.filename.split('/');
+			const filename = path[path.length - 1];
+			let move = move_download(download.id, `${dest_folder}/${filename}`);
+			move.then((s) => {
+				resolve(s);
+			}, (e) => {
+				reject(e);
+			});
 		}
+		browser.downloads.onCreated.addListener(listen);
 	});
 }
-
-browser.downloads.onCreated.addListener(async (item) => {
-	// Clunky!
-	const download_table = await browser.storage.local.get(item.url);
-	if (download_table === undefined) {
-		return;
-	}
-	const download_info = download_table[item.url];
-
-	switch(download_info.type) {
-		case 'direct_download':
-			browser.tabs.remove(download_info.tab_id);
-			break;
-		case 'folder_download':
-			browser.tabs.remove(download_info.tab_id);
-			const path = item.filename.split('/')
-			
-			let move = move_download(item.id, `${download_info.dest_folder}/${path[path.length - 1]}`, {});
-			move.then(() => {}, (err) => {
-				// TODO: Handle error
-				console.log(err)
-			})
-	}
-})
