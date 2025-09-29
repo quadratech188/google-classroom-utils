@@ -1,15 +1,5 @@
 const FILE_DIV_SELECTOR = 'div.luto0c';
 
-function get_classroom_name() {
-	const url = window.location.href
-	const re = /https:\/\/classroom\.google\.com\/u\/\d+\/c\/([^\/]+)/
-	const match = url.match(re);
-	if (match === null) {
-		throw `Failed to parse current url: ${url}`;
-	}
-	return match[1];
-}
-
 function add_button_div(div) {
 	const url = div.querySelector('a').href;
 

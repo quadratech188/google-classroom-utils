@@ -1,6 +1,6 @@
 async function get_dest_folder() {
 
-	const classroom_id = get_classroom_name(window.location.href);
+	const classroom_id = get_classroom_id(window.location.href);
 	const key = `classroom_map:${classroom_id}`;
 
 	const storage_data = await browser.storage.local.get(key);

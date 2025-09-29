@@ -16,7 +16,7 @@
 		{
 			"matches": ["*://classroom.google.com/*"],
 			"css": ["style.css"],
-			"js": ["content-actions.js", "inject-links.js"]
+			"js": ["util.js", "content-actions.js", "inject-links.js"]
 		}
 	],
 
