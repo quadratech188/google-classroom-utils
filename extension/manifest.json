@@ -24,6 +24,12 @@
 		"scripts": ["util.js", "move-download.js", "background-actions.js"]
 	},
 
+	"page_action": {
+		"default_popup": "popup.html",
+		"default_title": "Configure Classroom Download Path",
+		"show_matches": ["*://classroom.google.com/*"]
+	},
+
 	"web_accessible_resources": [
 		"path-chooser.html"
 	],
