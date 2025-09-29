@@ -1,5 +1,5 @@
 browser.runtime.onMessage.addListener((message) => {
-	direct_download(message.url);
+	direct_download(message);
 })
 
 browser.runtime.onConnect.addListener((port) => {
