@@ -1,46 +1,29 @@
-async function move_download(download_id, dest, dest_options) {
-	return await new Promise((resolve, reject) => {
-		async function listen(item) {
-			if (item.id != download_id) {
-				return;
-			}
-			if (!item.hasOwnProperty('state')) {
-				// Not state change
-				return;
-			}
-			if (item.state.current !== 'complete') {
-				// Not completed
-				return;
-			}
+async function move_download(download_id, dest, options) {
+	const item = await listen_once(browser.downloads.onChanged, (item) => {
+		return item.id === download_id
+			&& item.hasOwnProperty('state')
+			&& item.state.current == 'complete';});
 
-			browser.downloads.onChanged.removeListener(listen);
+	const download_item = (await browser.downloads.search({
+		id: item.id
+	}))[0];
 
-			const download_item = (await browser.downloads.search({
-				id: item.id
-			}))[0];
-
-			console.log(`Move file from ${download_item.filename} to ${dest}`);
-
-			try {
-				let result = await browser.runtime.sendNativeMessage('gcu_file_mover', {
-					file: download_item.filename,
-					dest: dest,
-					options: dest_options
-				});
-				if (result.type === 'success') {
-					resolve();
-				}
-				else {
-					reject(result);
-				}
-
-			} catch (err) {
-				reject({
-					type: 'message_error',
-					message: err
-				})
-			}
+	return browser.runtime.sendNativeMessage('gcu_file_mover', {
+		file: download_item.filename,
+		dest: dest,
+		options: options
+	}).then((result) => {
+		if (result.type === 'success') {
+			return;
 		}
-		browser.downloads.onChanged.addListener(listen);
-	})
+		else {
+			console.log(result);
+			throw result;
+		}
+	}, (e) => {
+		throw {
+			error_type: 'messaging',
+			message: e
+		};
+	});
 }

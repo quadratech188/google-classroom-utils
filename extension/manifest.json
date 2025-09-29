@@ -21,7 +21,7 @@
 	],
 
 	"background": {
-		"scripts": ["move-download.js", "background-actions.js"]
+		"scripts": ["util.js", "move-download.js", "background-actions.js"]
 	},
 
 	"web_accessible_resources": [

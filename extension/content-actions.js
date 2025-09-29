@@ -43,7 +43,6 @@ async function get_dest_folder() {
 			const path = path_input.value.trim();
 
 			storage_data[key] = path;
-			console.log(storage_data)
 			await browser.storage.local.set(storage_data);
 
 			floating.remove();
@@ -61,7 +60,7 @@ function handle_error(error) {
 
 	let type = 'error';
 	let ui_message;
-	if (error.type == 'message_error') {
+	if (error.type == 'messaging') {
 		ui_message = 'Failed to communicate with Native Messaging Host. Is it installed properly?';
 	}
 	else {
@@ -109,6 +108,7 @@ async function folder_download(file_url) {
 		name: 'folder_download'
 	});
 	port.onMessage.addListener((m) => {
+		console.log(m);
 		if (m.type === 'error') {
 			handle_error(m.message);
 		}
