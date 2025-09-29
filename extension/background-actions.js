@@ -57,7 +57,9 @@ function folder_download(file_url, dest_folder) {
 
 			const path = download.filename.split('/');
 			const filename = path[path.length - 1];
-			let move = move_download(download.id, `${dest_folder}/${filename}`);
+			let move = move_download(download.id, `${dest_folder}/${filename}`, {
+				already_exists: 'delete_and_throw'
+			});
 			move.then((s) => {
 				resolve(s);
 			}, (e) => {

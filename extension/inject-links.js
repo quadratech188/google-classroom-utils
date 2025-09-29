@@ -1,5 +1,14 @@
 const FILE_DIV_SELECTOR = 'div.luto0c';
-const DOWNLOAD_EXTENSION_DIV_CLASS = 'gcu-download-extension';
+
+function get_classroom_name() {
+	const url = window.location.href
+	const re = /https:\/\/classroom\.google\.com\/u\/\d+\/c\/([^\/]+)/
+	const match = url.match(re);
+	if (match === null) {
+		throw `Failed to parse current url: ${url}`;
+	}
+	return match[1];
+}
 
 function add_button_div(div) {
 	const url = div.querySelector('a').href;
@@ -18,7 +27,7 @@ function add_button_div(div) {
 	const download_url = `https://drive.usercontent.google.com/download?id=${file_id}&export=download&authuser=${authuser}`
 
 	let extension_div = document.createElement('div');
-	extension_div.classList.add(DOWNLOAD_EXTENSION_DIV_CLASS);
+	extension_div.classList.add('gcu-download-extension');
 
 	let direct_download_btn = document.createElement('button');
 	direct_download_btn.textContent = "Direct Download"
@@ -49,7 +58,7 @@ const observer = new MutationObserver(mutations => {
 		mutation.removedNodes.forEach(node => {
 			if (node.nodeType !== Node.ELEMENT_NODE) return;
 
-			if (node.classList.contains(DOWNLOAD_EXTENSION_DIV_CLASS)) {
+			if (node.classList.contains('gcu-download-extension')) {
 				add_button_div(mutation.target);
 			}
 		})
@@ -60,3 +69,7 @@ observer.observe(document.body, {
 	childList: true,
 	subtree: true,
 })
+
+let toast_div = document.createElement('div')
+toast_div.id = 'gcu-toast-container';
+document.body.appendChild(toast_div);

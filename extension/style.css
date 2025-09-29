@@ -15,3 +15,39 @@
 	border: none;
 	background-color: rgba(0, 0, 0, 0.5);
 }
+
+#gcu-toast-container {
+	width: 400px;
+	margin: 0 0 0 -200px;
+	left: 50%;
+	position: fixed;
+	bottom: 20px;
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.gcu-toast {
+	font-size: 16px;
+	font-weight: bold;
+	color: white;
+	padding: 10px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+	transform: translateX(100%);
+	transition: opacity 0.4s, transform 0.4s;
+}
+
+.gcu-toast.error {
+	background-color: #db4a5f;
+}
+
+.gcu-toast.warning {
+	background-color: #eec857;
+}
+
+.gcu-toast.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
