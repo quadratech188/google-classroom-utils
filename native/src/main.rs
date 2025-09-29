@@ -126,7 +126,7 @@ fn main() {
             AlreadyExists::DeleteAndThrow => {
                 match fs::remove_file(&request.file) {
                     Ok(_) => {
-                        report_error(ErrorType::DestExists, &format!("Destination {} already exists", request.dest.display()));
+                        report_error(ErrorType::DestExists, &format!("Destination {} already exists; deleting downloaded file", request.dest.display()));
                     }
                     Err(err) => {
                         report_error(ErrorType::FailedToRemoveFile, &err.to_string());
