@@ -1,11 +1,12 @@
 async function get_dest_folder() {
-	
-	const storage_data = await browser.storage.sync.get('classroom_map');
-	const classroom_map = storage_data['classroom_map'] || {};
 
-	const classroom_name = get_classroom_name(window.location.href);
-	if (classroom_name in classroom_map) {
-		return classroom_map[classroom_name];
+	const classroom_id = get_classroom_name(window.location.href);
+	const key = `classroom_map:${classroom_id}`;
+
+	const storage_data = await browser.storage.local.get(key);
+
+	if (key in storage_data) {
+		return storage_data[key];
 	}
 
 	let floating = document.createElement('iframe');
@@ -41,11 +42,9 @@ async function get_dest_folder() {
 		submit_button.addEventListener('click', async () => {
 			const path = path_input.value.trim();
 
-			const storage_data = await browser.storage.sync.get('classroom_map');
-			let classroom_map = storage_data['classroom_map'] || {};
-			classroom_map[classroom_name] = path;
-			storage_data['classroom_map'] = classroom_map;
-			await browser.storage.sync.set(storage_data);
+			storage_data[key] = path;
+			console.log(storage_data)
+			await browser.storage.local.set(storage_data);
 
 			floating.remove();
 			resolve(path);
