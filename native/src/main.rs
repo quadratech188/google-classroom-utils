@@ -1,5 +1,7 @@
 use serde;
-use std::{fs, io::{self, stdout, ErrorKind, Read, Write}, path};
+use std::{env, fs, io::{self, stdout, ErrorKind, Read, Write}, path};
+
+mod install;
 
 #[derive(serde::Deserialize)]
 #[serde(default)]
@@ -136,6 +138,12 @@ fn move_file(request: &Request) -> Result<(), Error> {
 }
 
 fn main() -> io::Result<()> {
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 1 {
+        install::install(&args[1]);
+        return Ok(())
+    };
+
     let result = read_message()
         .and_then(|msg| parse_message(&msg))
         .and_then(|req| {

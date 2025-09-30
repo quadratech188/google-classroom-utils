@@ -1,0 +1,7 @@
+{{
+	"name": "gcu_file_mover",
+	"description": "File mover for Google Classroom Tweaks",
+	"path": {},
+	"type": "stdio",
+	"allowed_extensions": ["google-classroom-utils@quadratech188"]
+}}
