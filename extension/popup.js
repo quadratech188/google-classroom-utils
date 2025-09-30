@@ -30,5 +30,6 @@
 
 		storage_data[key] = path;
 		await browser.storage.local.set(storage_data);
+		window.close();
 	})
 })();
