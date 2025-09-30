@@ -46,6 +46,8 @@ async function folder_download(file_url, dest_folder) {
 	const filename = path[path.length - 1];
 
 	return move_download(download.id, dest_folder + '/' + filename, {
-		already_exists: 'delete_and_throw'
+		create_dest_folder: false,
+		replace_dest: false,
+		delete_on_error: true
 	});
 }
