@@ -4,7 +4,7 @@ browser.runtime.onMessage.addListener((message) => {
 
 browser.runtime.onConnect.addListener((port) => {
 	port.onMessage.addListener(async (message) => {
-		await folder_download(message.url, message.dest_folder).then((_) => {
+		await folder_download(message.url, message.dest).then((_) => {
 			port.postMessage({
 				type: 'success'
 			});
@@ -30,7 +30,7 @@ async function direct_download(file_url) {
 	await browser.tabs.remove(download_tab.id);
 }
 
-async function folder_download(file_url, dest_folder) {
+async function folder_download(file_url, dest) {
 	let download_tab = await browser.tabs.create({
 		active: false,
 		url: file_url
@@ -42,10 +42,7 @@ async function folder_download(file_url, dest_folder) {
 
 	await browser.tabs.remove(download_tab.id);
 
-	const path = download.filename.split('/');
-	const filename = path[path.length - 1];
-
-	return move_download(download.id, dest_folder + '/' + filename, {
+	return move_download(download.id, dest, {
 		create_dest_folder: false,
 		replace_dest: false,
 		delete_on_error: true

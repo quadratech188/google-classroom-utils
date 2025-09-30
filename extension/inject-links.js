@@ -1,4 +1,5 @@
 const FILE_DIV_SELECTOR = 'div.luto0c';
+const FILENAME_SELECTOR = 'div.A6dC2c.QDKOcc.UtdKPb.U0QIdc';
 
 function add_button_div(div) {
 	const url = div.querySelector('a').href;
@@ -16,6 +17,8 @@ function add_button_div(div) {
 	// https://sites.google.com/site/gdocs2direct/
 	const download_url = `https://drive.usercontent.google.com/download?id=${file_id}&export=download&authuser=${authuser}`
 
+	const filename = div.querySelector(FILENAME_SELECTOR).innerHTML;
+
 	let extension_div = document.createElement('div');
 	extension_div.classList.add('gcu-download-extension');
 
@@ -29,7 +32,7 @@ function add_button_div(div) {
 	let folder_download_btn = document.createElement('button');
 	folder_download_btn.textContent = "Download to Folder"
 	folder_download_btn.addEventListener('click', () => {
-		folder_download(download_url);
+		folder_download(download_url, filename);
 	})
 	extension_div.appendChild(folder_download_btn);
 

@@ -94,7 +94,7 @@ function show_toast(type, message, duration) {
 	}, duration);
 }
 
-async function folder_download(file_url) {
+async function folder_download(file_url, filename) {
 	let folder;
 	try {
 		folder = await get_dest_folder();
@@ -108,13 +108,12 @@ async function folder_download(file_url) {
 		name: 'folder_download'
 	});
 	port.onMessage.addListener((m) => {
-		console.log(m);
 		if (m.type === 'error') {
 			handle_error(m.message);
 		}
 	});
 	port.postMessage({
 		url: file_url,
-		dest_folder: folder
-	})
+		dest: folder + '/' + filename
+	});
 }
