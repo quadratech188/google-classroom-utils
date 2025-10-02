@@ -1,0 +1,52 @@
+name: Build and Release Native File Mover
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+env:
+  CARGO_TERM_COLOR: always
+
+# https://jon.sprig.gs/blog/post/2442
+
+permissions:
+  contents: write
+
+jobs:
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: softprops/action-gh-release@v2
+
+  build_release:
+    name: Build Releases
+    needs: create_release
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        include:
+        - os: ubuntu-latest
+          target: x86_64-unknown-linux-gnu
+          ext: ""
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: cd native && cargo build --verbose --release --target ${{ matrix.target }}
+
+      - name: Rename Binary
+        run: |
+          VERSION=${GITHUB_REF_NAME}
+          BIN_NAME="file-mover-${VERSION}-${{ matrix.target }}${{ matrix.ext }}"
+          mv native/target/${{ matrix.target }}/release/file-mover${{ matrix.ext }} $BIN_NAME
+          echo "BIN_NAME=$BIN_NAME" >> $GITHUB_ENV
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.BIN_NAME }}
