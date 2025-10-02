@@ -1,0 +1,36 @@
+name: Release Extension to AMO
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  pack:
+    name: Release
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install web-ext
+        run: npm install --global web-ext
+
+      - name: Send to AMO
+        # `web-ext sign` is almost guaranteed to timeout
+        continue-on-error: true
+
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.web_ext_api_key }}
+          WEB_EXT_API_SECRET: ${{ secrets.web_ext_api_secret }}
+        run: |
+          cd extension
+          web-ext sign --channel=listed --timeout=30000 --amo-metadata=../etc/metadata.json
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: extension/web-ext-artifacts/*
