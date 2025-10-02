@@ -21,7 +21,7 @@ async function move_download(download_id, dest, options) {
 			throw result;
 		}
 	}, (e) => {
-		conole.log(e);
+		console.log(e);
 		throw {
 			error_type: 'messaging',
 			message: e.toString()

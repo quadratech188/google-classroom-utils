@@ -1,7 +1,7 @@
 {{
 	"name": "gcu_file_mover",
 	"description": "File mover for Google Classroom Utils",
-	"path": {},
+	"path": "{}",
 	"type": "stdio",
-	"allowed_origins": ["chrome-extension:hciemcnkcgicakakieabdighfciiameh"]
+	"allowed_origins": ["chrome-extension://hciemcnkcgicakakieabdighfciiameh/"]
 }}

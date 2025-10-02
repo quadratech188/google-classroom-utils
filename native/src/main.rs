@@ -141,7 +141,7 @@ fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     // Native Messaging passes the extension id as argv[1], so we can't just check for argv[1]
     if args.len() > 2 && args[1] == "install" {
-        install::install(&args[1]);
+        install::install(&args[2]);
         return Ok(())
     };
 

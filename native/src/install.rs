@@ -1,13 +1,10 @@
 use std::{env::{current_exe, home_dir}, fs, path::PathBuf};
 
-pub fn generate_native_manifest() -> String {
-    format!(include_str!("../native_manifest.json.template"),
-    serde_json::to_string(&current_exe().unwrap()).unwrap())
-}
-
 pub fn install(name: &String) {
     match if name == "firefox" {
         install_firefox()
+    } else if name.starts_with("chromium") {
+        install_chromium(&name.split(':').last().expect("Failed to parse browser string"))
     } else {
         Err(format!("Unknown browser: {}", name))
     } {
@@ -28,7 +25,9 @@ fn install_firefox() -> Result<(), String> {
     }
     else {
         println!("Writing manifest to {}...", manifest_path.display());
-        fs::write(&manifest_path, generate_native_manifest()).map_err(|err| {
+        fs::write(&manifest_path,
+            format!(include_str!("../firefox.json.template"), current_exe().unwrap().display())
+        ).map_err(|err| {
             err.to_string()
         }).and_then(|()| {
             println!("Wrote manifest to {}. Please restart Firefox.", manifest_path.display());
@@ -38,7 +37,23 @@ fn install_firefox() -> Result<(), String> {
 }
 
 #[cfg(target_os = "linux")]
-fn install_chromium(exact_name: &String) -> std::io::Result<()> {
-    // TODO
-    Ok(())
+fn install_chromium(exact_name: &str) -> Result<(), String> {
+
+    let manifest_path = home_dir().expect("Failed to find HOME dir")
+        .join(format!(".config/{}/NativeMessagingHosts/gcu_file_mover.json", exact_name));
+
+    if manifest_path.exists() {
+        Err(format!("Manifest file {} already exists.", manifest_path.display()))
+    }
+    else {
+        println!("Writing manifest to {}...", manifest_path.display());
+        fs::write(&manifest_path, 
+            format!(include_str!("../chromium.json.template"), current_exe().unwrap().display())
+        ).map_err(|err| {
+            err.to_string()
+        }).and_then(|()| {
+            println!("Wrote manifest to {}. Please restart {}", manifest_path.display(), exact_name);
+            Ok(())
+        })
+    }
 }
