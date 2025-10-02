@@ -1,3 +1,14 @@
+// Firefox - we already injected everything with the 'scripts' key
+if (typeof importScripts === 'undefined') {
+
+}
+// Chromium
+else {
+	importScripts('browser-polyfill.min.js');
+	importScripts('util.js');
+	importScripts('move-download.js');
+}
+
 browser.runtime.onMessage.addListener((message) => {
 	direct_download(message);
 })

@@ -1,5 +1,5 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "Google Classroom Utils",
 	"version": "0.0",
 	"description": "Utilities for Google Classroom",
@@ -8,7 +8,6 @@
 		"downloads",
 		"nativeMessaging",
 		"storage",
-		"tabHide",
 		"tabs"
 	],
 
@@ -16,12 +15,13 @@
 		{
 			"matches": ["*://classroom.google.com/*"],
 			"css": ["style.css"],
-			"js": ["util.js", "content-actions.js", "inject-links.js"]
+			"js": ["browser-polyfill.min.js", "util.js", "content-actions.js", "inject-links.js"]
 		}
 	],
 
 	"background": {
-		"scripts": ["util.js", "move-download.js", "background-actions.js"]
+		"scripts": ["util.js", "move-download.js", "background-actions.js"],
+		"service_worker": "background-actions.js"
 	},
 
 	"page_action": {
@@ -31,7 +31,10 @@
 	},
 
 	"web_accessible_resources": [
-		"path-chooser.html"
+		{
+			"resources": ["path-chooser.html"],
+			"matches": ["*://classroom.google.com/*"]
+		}
 	],
 
 	"browser_specific_settings": {
