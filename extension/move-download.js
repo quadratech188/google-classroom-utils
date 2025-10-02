@@ -21,9 +21,10 @@ async function move_download(download_id, dest, options) {
 			throw result;
 		}
 	}, (e) => {
+		conole.log(e);
 		throw {
 			error_type: 'messaging',
-			message: e
+			message: e.toString()
 		};
 	});
 }
