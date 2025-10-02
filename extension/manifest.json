@@ -26,10 +26,9 @@
 		"service_worker": "background-actions.js"
 	},
 
-	"page_action": {
-		"default_popup": "popup.html",
+	"action": {
 		"default_title": "Configure Classroom Download Path",
-		"show_matches": ["*://classroom.google.com/*"]
+		"default_popup": "popup.html"
 	},
 
 	"web_accessible_resources": [

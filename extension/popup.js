@@ -9,6 +9,17 @@
 		currentWindow: true
 	}))[0];
 
+	let classroom_id;
+	try {
+		classroom_id = get_classroom_id(tab.url);
+	}
+	catch (e) {
+		let warning = document.createElement('p');
+		warning.innerText = 'This is not a classroom page!';
+		warning.style.color = '#ff0000';
+		document.body.appendChild(warning);
+	}
+
 	const key = `classroom_map:${get_classroom_id(tab.url)}`;
 
 	let storage_data = await browser.storage.local.get(key);
