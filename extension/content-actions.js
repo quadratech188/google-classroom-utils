@@ -1,5 +1,4 @@
 async function get_dest_folder() {
-
 	const classroom_id = get_classroom_id(window.location.href);
 	const key = `classroom_map:${classroom_id}`;
 
@@ -8,46 +7,41 @@ async function get_dest_folder() {
 	if (key in storage_data) {
 		return storage_data[key];
 	}
-
 	let floating = document.createElement('iframe');
-	floating.setAttribute('src', browser.runtime.getURL('path-chooser.html'))
-	floating.setAttribute('id', 'gcu-path-chooser-bg')
+	const floating_src = browser.runtime.getURL('path-chooser.html')
+	floating.setAttribute('src', floating_src);
+	floating.setAttribute('id', 'gcu-path-chooser-bg');
 	document.body.appendChild(floating);
 
-	let inner_document = await new Promise((resolve) => {
-		floating.addEventListener('load', () => {
-			resolve(floating.contentDocument);
-		});
-	})
+	await new Promise(resolve => {
+		floating.addEventListener("load", resolve, { once: true });
+	});
 
-	let path_input = inner_document.getElementById('path-input');
-	let submit_button = inner_document.getElementById('submit-button');
-	let cancel_button = inner_document.getElementById('cancel-button');
+	floating.contentWindow.postMessage({}, floating_src);
 
-	path_input.focus();
-
-	return new Promise(async (resolve, reject) => {
-		path_input.addEventListener('keydown', (e) => {
-			if (e.key == 'Enter') {
-				e.preventDefault();
-				submit_button.click();
+	return new Promise((resolve, reject) => {
+		// We can't just use options = {once = true} because
+		// classroom also throws other random events
+		function listen(event) {
+			if (event.source !== floating.contentWindow) {
+				return;
 			}
-		});
 
-		cancel_button.addEventListener('click', () => {
-			floating.remove();
-			reject(new Error('Cancelled Dialog'))
-		})
+			window.removeEventListener('message', listen);
 
-		submit_button.addEventListener('click', async () => {
-			const path = path_input.value.trim();
-
-			storage_data[key] = path;
-			await browser.storage.local.set(storage_data);
-
-			floating.remove();
-			resolve(path);
-		});
+			if (event.data.type === 'success') {
+				resolve(event.data.message);
+			}
+			else {
+				reject(event.data.message);
+			}
+		}
+		window.addEventListener('message', listen);
+	}).then(async (path) => {
+		storage_data[key] = path;
+		await browser.storage.local.set(storage_data);
+	}).finally(async () => {
+		floating.remove();
 	});
 }
 
