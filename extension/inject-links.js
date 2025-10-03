@@ -1,4 +1,4 @@
-const FILE_DIV_SELECTOR = 'div.luto0c';
+const FILE_DIV_SELECTOR = 'div.luto0c, div.t2wIBc';
 const FILENAME_SELECTOR = 'div.A6dC2c.QDKOcc.UtdKPb.U0QIdc';
 
 function add_button_div(div) {
