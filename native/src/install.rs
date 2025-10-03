@@ -21,19 +21,18 @@ fn install_firefox() -> Result<(), String> {
         .join(".mozilla/native-messaging-hosts/gcu_file_mover.json");
 
     if manifest_path.exists() {
-        Err(format!("Manifest file {} already exists.", manifest_path.display()))
+        println!("Manifest file {} already exists. Overwriting...", manifest_path.display());
     }
-    else {
-        println!("Writing manifest to {}...", manifest_path.display());
-        fs::write(&manifest_path,
-            format!(include_str!("../firefox.json.template"), current_exe().unwrap().display())
-        ).map_err(|err| {
-            err.to_string()
-        }).and_then(|()| {
-            println!("Wrote manifest to {}. Please restart Firefox.", manifest_path.display());
-            Ok(())
-        })
-    }
+
+    println!("Writing manifest to {}...", manifest_path.display());
+    fs::write(&manifest_path,
+        format!(include_str!("../firefox.json.template"), current_exe().unwrap().display())
+    ).map_err(|err| {
+        err.to_string()
+    }).and_then(|()| {
+        println!("Wrote manifest to {}. Please restart Firefox.", manifest_path.display());
+        Ok(())
+    })
 }
 
 #[cfg(target_os = "linux")]
@@ -43,17 +42,16 @@ fn install_chromium(exact_name: &str) -> Result<(), String> {
         .join(format!(".config/{}/NativeMessagingHosts/gcu_file_mover.json", exact_name));
 
     if manifest_path.exists() {
-        Err(format!("Manifest file {} already exists.", manifest_path.display()))
+        println!("Manifest file {} already exists. Overwriting...", manifest_path.display());
     }
-    else {
-        println!("Writing manifest to {}...", manifest_path.display());
-        fs::write(&manifest_path, 
-            format!(include_str!("../chromium.json.template"), current_exe().unwrap().display())
-        ).map_err(|err| {
-            err.to_string()
-        }).and_then(|()| {
-            println!("Wrote manifest to {}. Please restart {}", manifest_path.display(), exact_name);
-            Ok(())
-        })
-    }
+
+    println!("Writing manifest to {}...", manifest_path.display());
+    fs::write(&manifest_path, 
+        format!(include_str!("../chromium.json.template"), current_exe().unwrap().display())
+    ).map_err(|err| {
+        err.to_string()
+    }).and_then(|()| {
+        println!("Wrote manifest to {}. Please restart {}", manifest_path.display(), exact_name);
+        Ok(())
+    })
 }
