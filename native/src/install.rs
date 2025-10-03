@@ -1,4 +1,4 @@
-use std::{env::{current_exe, home_dir}, fs, path::PathBuf};
+use std::{env::{current_exe, home_dir}, fs};
 
 pub fn install(name: &String) {
     match if name == "firefox" {
@@ -15,6 +15,14 @@ pub fn install(name: &String) {
     }
 }
 
+fn firefox_manifest() -> String{
+    format!(include_str!("../firefox.json.template"), current_exe().unwrap().display())
+}
+
+fn chromium_manifest() -> String{
+    format!(include_str!("../chromium.json.template"), current_exe().unwrap().display())
+}
+
 #[cfg(target_os = "linux")]
 fn install_firefox() -> Result<(), String> {
     let manifest_path = home_dir().expect("Failed to find HOME dir")
@@ -25,14 +33,13 @@ fn install_firefox() -> Result<(), String> {
     }
 
     println!("Writing manifest to {}...", manifest_path.display());
-    fs::write(&manifest_path,
-        format!(include_str!("../firefox.json.template"), current_exe().unwrap().display())
-    ).map_err(|err| {
-        err.to_string()
-    }).and_then(|()| {
-        println!("Wrote manifest to {}. Please restart Firefox.", manifest_path.display());
-        Ok(())
-    })
+    fs::write(&manifest_path, firefox_manifest())
+        .map_err(|err| {
+            err.to_string()})
+        .and_then(|()| {
+            println!("Wrote manifest to {}. Please restart Firefox.", manifest_path.display());
+            Ok(())
+        })
 }
 
 #[cfg(target_os = "linux")]
@@ -47,11 +54,25 @@ fn install_chromium(exact_name: &str) -> Result<(), String> {
 
     println!("Writing manifest to {}...", manifest_path.display());
     fs::write(&manifest_path, 
-        format!(include_str!("../chromium.json.template"), current_exe().unwrap().display())
-    ).map_err(|err| {
-        err.to_string()
-    }).and_then(|()| {
-        println!("Wrote manifest to {}. Please restart {}", manifest_path.display(), exact_name);
-        Ok(())
-    })
+        chromium_manifest())
+        .map_err(|err| {
+            err.to_string()})
+        .and_then(|()| {
+            println!("Wrote manifest to {}. Please restart {}.", manifest_path.display(), exact_name);
+            Ok(())
+        })
+}
+
+#[cfg(target_os="windows")]
+fn install_firefox() -> Result<(), String> {
+    println!("Auto install for Windows is unsupported! Follow the install instructions at https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_messaging#windows_setup");
+    println!("Use the following manifest:\n{}", firefox_manifest());
+    Ok(())
+}
+
+#[cfg(target_os="windows")]
+fn install_chromium(exact_name: &str) -> Result<(), String> {
+    println!("Auto install for Windows is unsupported! Follow the install instructions at https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging#native-messaging-host-location");
+    println!("Use the following manifest:\n{}", chromium_manifest());
+    Ok(())
 }
