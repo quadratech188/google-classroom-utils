@@ -22,6 +22,9 @@ To move files on your computer, this extension requires a Native Messaging Host:
 
 - Move it to a directory where it won't be accidentally deleted.
 
+> [!NOTE]
+> The automatic installation is currently only supported on Linux. On Windows the daemon will output the manifest.json file, which you will have to install manually.
+
 - Run `$EXE_NAME install $BROWSER`, where:
     - `$EXE_NAME` is the filename of the executable you downloaded
     - `$BROWSER` is:
