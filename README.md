@@ -13,8 +13,8 @@ You can also click the extension icon on a Classroom page to edit the save locat
 # Installation
 
 Download the browser extension:
-- Firefox: https://addons.mozilla.org/en-US/firefox/addon/67ff9ed92e104417bfbf/
-- Chromium: *Coming Soon*
+- Firefox: https://addons.mozilla.org/en-US/firefox/addon/67ff9ed92e104417bfbf
+- Chromium: https://chromewebstore.google.com/detail/aefgjalmanehongmhmpjddhilpaagffm
 
 To move files on your computer, this extension requires a Native Messaging Host: A program on your computer that communicates with the browser extension.
 
